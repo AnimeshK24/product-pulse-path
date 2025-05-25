@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,20 @@ interface CompanySetupProps {
 const CompanySetup = ({ onSetup }: CompanySetupProps) => {
   const [companyName, setCompanyName] = useState("");
   const [subdomain, setSubdomain] = useState("");
+
+  // Auto-fill subdomain based on company name
+  useEffect(() => {
+    if (companyName) {
+      const urlFriendlyName = companyName
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+      setSubdomain(urlFriendlyName);
+    } else {
+      setSubdomain("");
+    }
+  }, [companyName]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +68,7 @@ const CompanySetup = ({ onSetup }: CompanySetupProps) => {
                     id="subdomain"
                     value={subdomain}
                     onChange={(e) => setSubdomain(e.target.value)}
-                    placeholder="Parallel Connect"
+                    placeholder="parallel-connect"
                     className="h-12 rounded-r-none"
                     required
                   />
